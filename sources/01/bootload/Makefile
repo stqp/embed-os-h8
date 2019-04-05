@@ -1,4 +1,4 @@
-PREFIX = /usr/local
+PREFIX = /Users/stokuda/usr
 ARCH   = h8300-elf
 BINDIR = $(PREFIX)/bin
 ADDNAME = $(ARCH)-
@@ -13,20 +13,22 @@ OBJDUMP = $(BINDIR)/$(ADDNAME)objdump
 RANLIB  = $(BINDIR)/$(ADDNAME)ranlib
 STRIP   = $(BINDIR)/$(ADDNAME)strip
 
-H8WRITE = /usr/local/h8write
+H8WRITE = ../../tools/h8write
 
-H8WRITE_SERDEV = /dev/cuad0 #シリアル接続
+#H8WRITE_SERDEV = /dev/cuad0 #シリアル接続
+#H8WRITE_SERDEV = /dev/tty.usbserial-1410
+H8WRITE_SERDEV = /dev/cu.usbserial-1420
 
 
 # コンパイルするソースコード群
 OBJS = vector.o startup.o main.o
-OBJS += libo serial.o
+OBJS += lib.o serial.o
 
 #生成する実行形式のファイル名
 TARGET = kzload
 
 #コンパイルオプション
-CLAGS = -Wall -mh -nostdinc -nostdlib -fno-builtin
+CFLAGS = -Wall -mh -nostdinc -nostdlib -fno-builtin
 CFLAGS += -I.
 CFLAGS += -Os
 CFLAGS += -DKZLOAD
@@ -62,14 +64,8 @@ image : $(TARGET).mot
 
 #フラッシュROMへの転送
 write : $(TARGET).mot
-				$(H8WRITE) -3069 -f20 $(TARGET).mot $(H8WRITE_SERDEV)
-
+				$(H8WRITE) -d -3069 -f20 $(TARGET).mot $(H8WRITE_SERDEV)
 
 clean :
 	rm -f $(OBJS) $(TARGET) $(TARGET).elf $(TARGET).mot
-
-
-
-
-
 

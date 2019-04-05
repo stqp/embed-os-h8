@@ -16,19 +16,19 @@ struct h8_3069f_sci{
   volatile uint8 ssr;
   volatile uint8 rdr;
   volatile uint8 scmr;
-}
+};
 
 
 #define H8_3069F_SCI_SMR_CKS_PER1  (0<<0)
 #define H8_3069F_SCI_SMR_CKS_PER4  (1<<0)
 #define H8_3069F_SCI_SMR_CKS_PER16 (2<<0)
 #define H8_3069F_SCI_SMR_CKS_PER64 (3<<0)
-#define H8_3069F_SCI_SMR_CKS_MP    (1<<2)
-#define H8_3069F_SCI_SMR_CKS_STOP  (1<<3)
-#define H8_3069F_SCI_SMR_CKS_OE    (1<<4)
-#define H8_3069F_SCI_SMR_CKS_PE    (1<<5)
-#define H8_3069F_SCI_SMR_CKS_CHR   (1<<6)
-#define H8_3069F_SCI_SMR_CKS_CA    (1<<7)
+#define H8_3069F_SCI_SMR_MP    (1<<2)
+#define H8_3069F_SCI_SMR_STOP  (1<<3)
+#define H8_3069F_SCI_SMR_OE    (1<<4)
+#define H8_3069F_SCI_SMR_PE    (1<<5)
+#define H8_3069F_SCI_SMR_CHR   (1<<6)
+#define H8_3069F_SCI_SMR_CA    (1<<7)
 
 #define H8_3069F_SCI_SCR_CKE0 (1<<0)
 #define H8_3069F_SCI_SCR_CKE1 (1<<1)
@@ -43,8 +43,8 @@ struct h8_3069f_sci{
 #define H8_3069F_SCI_SSR_MPB       (1<<1)
 #define H8_3069F_SCI_SSR_TEND      (1<<2)
 #define H8_3069F_SCI_SSR_PER       (1<<3)
-#define H8_3069F_SCI_SSR_PERFERERS (1<<4)
-#define H8_3069F_SCI_SSR_OPER      (1<<5)
+#define H8_3069F_SCI_SSR_FERERS    (1<<4)
+#define H8_3069F_SCI_SSR_ORER      (1<<5)
 #define H8_3069F_SCI_SSR_RDRF      (1<<6) //受信完了
 #define H8_3069F_SCI_SSR_TDRE      (1<<7) //送信完了
 
@@ -52,9 +52,9 @@ struct h8_3069f_sci{
 static struct {
   volatile struct h8_3069f_sci *sci;
 } regs[SERIAL_SCI_NUM] = {
-  { H8_3069F_SCI0 };
-  { H8_3069F_SCI1 };
-  { H8_3069F_SCI2 };
+  { H8_3069F_SCI0 },
+  { H8_3069F_SCI1 },
+  { H8_3069F_SCI2 },
 };
 
 
@@ -72,7 +72,7 @@ int serial_init(int index){
 }
 
 
-//送信可能化
+//送信可能か？
 int serial_is_send_enable(int index){
   volatile struct h8_3069f_sci *sci = regs[index].sci;
   return (sci->ssr & H8_3069F_SCI_SSR_TDRE );
@@ -80,7 +80,7 @@ int serial_is_send_enable(int index){
 
 
 //1文字送信
-int serial_send_byte(int index, unsigned char b){
+int serial_send_byte(int index, unsigned char c){
   volatile struct h8_3069f_sci *sci = regs[index].sci;
 
   while (!serial_is_send_enable(index)){;}
